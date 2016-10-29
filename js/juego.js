@@ -4,6 +4,7 @@ var juego = {
         [],
         [],
     ],
+    mezclando: false,
     'espacioVacio': {
         fila: 2,
         columna: 2
@@ -47,21 +48,26 @@ var juego = {
         }
     },
     mezclarFichas: function(veces) {
+        this.mezclando=true;
         var nombreMetodos = ["moverHaciaAbajo", "moverHaciaArriba", "moverHaciaLaDerecha", "moverHaciaLaIzquierda"];
+
         var i = 0;
+
+        var that=this;
         var mezcla = function() {
             var random = Math.floor(Math.random() * 4);
             i++;
 
             var nombreMetodo = nombreMetodos[random];
             
-            this[nombreMetodo]();
+            that[nombreMetodo]();
             if (i > veces) {
-             
+                that.mezclando = false;
+               clearInterval(intervalo);
             }
         };
 
-        
+        var intervalo = setInterval(mezcla,50);
     },
     chequearSiGano: function() {
         var gano = true;
@@ -76,15 +82,14 @@ var juego = {
                 }
 
                 var filaInicial = pieza.fila;
-               
-
                 var columnaInicial = pieza.columna;
                 
-                if (false)
-                gano = false;
+                if (!(fila === filaInicial && columna === columnaInicial)){
+                    return false;
+                }
             }
         }
-        if (gano) {
+        if (gano && this.mezclando === false) {
             alert('ganó!');
         }
     },
@@ -95,7 +100,7 @@ var juego = {
         ficha.dom.animate({
             'left': columna * 200 + 'px',
             'top': fila * 200 + 'px'
-        }, 200);
+        }, 100);
         this.filas[fila][columna] = ficha;
         console.log(this.filas[2][2]);
     },
